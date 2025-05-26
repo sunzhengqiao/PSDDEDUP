@@ -10,7 +10,7 @@ This AutoLISP script identifies and removes duplicate Property Set Definitions (
 
 After loading you will see:
 ```
-PSDDEDUP v9 loaded – type PSDDEDUP to run.
+PSDDEDUP loaded – type PSDDEDUP to run.
 ```
 The script is now ready.
 
