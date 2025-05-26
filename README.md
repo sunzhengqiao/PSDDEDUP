@@ -6,9 +6,10 @@ AutoLISP scripts to identify and remove duplicate Property Set Definitions (PSDs
 
 - `PSDDEDUP v8.lsp` – Chinese user interface.
 - `PSDDEDUP_EN.lsp` – English user interface.
+- `PSD_WHITELIST.lsp` – delete PSDs not in a built-in whitelist (German prompts).
 - `需求文档.txt` – project requirements (Chinese).
 
-Load either script with `APPLOAD` then run `PSDDEDUP` or `PSDDEDUP_EN`.
+Load the script you need with `APPLOAD` then run its command (e.g. `PSDDEDUP`).
 
 ## Usage
 Detailed instructions are available in:
