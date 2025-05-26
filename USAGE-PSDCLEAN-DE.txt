@@ -1,0 +1,36 @@
+PSD_WHITELIST_CLEAN – Kurzanleitung
+
+Zweck
+-----
+Dieses Skript entfernt alle Property-Set-Definitions (PSD), die nicht in der integrierten Whitelist aufgef\u00fchrt sind.
+
+Skript laden
+------------
+1. AutoCAD Architecture starten.
+2. `APPLOAD` in der Befehlszeile ausf\u00fchren.
+3. Datei `PSD_WHITELIST_CLEAN.lsp` laden.
+
+Nach dem Laden erscheint:
+    WLREIN geladen – Befehl PSDCLEAN eingeben.
+
+Befehl ausf\u00fchren
+------------------
+1. `PSDCLEAN` eingeben.
+2. Das Skript durchsucht alle vorhandenen PSDs. Sind keine vorhanden, erscheint:
+    => Keine Property-Set-Definitionen in dieser Zeichnung.
+3. Alle nicht auf der Whitelist stehenden PSDs werden automatisch entfernt.
+   Nach Abschluss erscheint:
+    \u2714 Bereinigung abgeschlossen.
+
+Whitelist (Auszug)
+------------------
+2dBlock, AecPolygonStil, Dachelementstil, Decke, Deckenelemente,
+Deckenstil, Dichte, Fassadenstil, Fenster, Fensterstil,
+Gel\u00e4nderstil, hsbPlatte, hsbResponsibilitySet, hsbStab,
+Multiwand, RaumRubner, Raumstil, RubnerPolylinien,
+Tragwerkstil, Treppe, Treppenstil, T\u00fcren, T\u00fcrstil,
+Wand, Wandstil.
+
+Tipp
+----
+Optional kann anschlie\u00dfend `PURGE` ausgef\u00fchrt werden, um nicht mehr ben\u00f6tigte Elemente zu l\u00f6schen.
