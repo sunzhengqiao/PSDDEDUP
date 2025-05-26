@@ -6,7 +6,7 @@ This AutoLISP script identifies and removes duplicate Property Set Definitions (
 📦 **Load the script**
 1. Start AutoCAD Architecture.
 2. Type `APPLOAD` at the command line.
-3. Load the file `PSDDEDUP v9.lsp`.
+3. Load the file `PSDDEDUP.lsp`.
 
 After loading you will see:
 ```
