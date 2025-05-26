@@ -1,5 +1,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PSD_DEDUP_v9.lsp  —  Remove duplicate Property-Set-Definitions
+;; Script Name : PSD_DEDUP.lsp
+;; Version     : v1
+;; Author      : zhengqiao.sun@hsbcad.com
+;; Date        : 23.05.2025
+;; Description : Removes duplicate Property-Set-Definitions (PSD) in AutoCAD
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PSD_DEDUP.lsp  —  Remove duplicate Property-Set-Definitions
 (vl-load-com)
 
 ;;— Extract base name —————————————————————————————————————————
@@ -117,5 +123,5 @@
   (princ)
 )
 
-(princ "\nPSDDEDUP v9 loaded – type PSDDEDUP to run.\n")
+(princ "\nPSDDEDUP v1 loaded – type PSDDEDUP to run.\n")
 (princ)
