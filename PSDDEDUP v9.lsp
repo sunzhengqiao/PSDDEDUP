@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PSD_DEDUP_v8.lsp  ——  扫描并删除重复 Property-Set-Definitions
+;; PSD_DEDUP_v9.lsp  ——  清理重复 Property-Set-Definitions（德语界面）
 (vl-load-com)
 
 ;— 基名提取 ————————————————————————————————
@@ -39,6 +39,16 @@
 (defun _baseMatch (b f) (or (null f)
   (vl-some '(lambda (p) (wcmatch (strcase b) (strcase p))) f)))
 
+;— 从组中算出需删除的名称（保留一个基名） ————————
+(defun _dupList (base lst / keep del)
+  (foreach n lst
+    (if (= n base)
+      (if keep
+        (setq del (cons n del))
+        (setq keep T))
+      (setq del (cons n del))))
+  (reverse del))
+
 ;— Y/N 简易确认 ——————————————————————————
 (defun _confirm (msg / input)
   (princ (strcat "\n" msg " [Y/N] <N>: "))
@@ -56,12 +66,12 @@
       '(lambda () (setq o (vla-item d nm)) (vla-delete o)))))
 
 ;— 主命令 ——————————————————————————————
-(defun c:PSDDEDUP (/ all filtStr filters groups i sel g ok)
+(defun c:PSDDEDUP (/ all filtStr filters groups i sel g delList)
   (setq all (_names))
-  (if (null all) (princ "\n=> 此图无 Property Set Definitions。")
+  (if (null all) (princ "\n=> Keine Property-Set-Definitionen in dieser Zeichnung.")
     (progn
       (setq filtStr (getstring T
-        "\n输入基名过滤(逗号,* ?) <全部>: "))
+        "\nBasisnamen-Filter eingeben (Komma,* ?) <Alle>: "))
       (if (> (strlen filtStr) 0)
         (setq filters (_split filtStr ",")))
 
@@ -71,28 +81,29 @@
                      groups))
 
       (if (null groups)
-        (princ "\n=> 未检出重复组。")
+        (princ "\n=> Keine doppelten Gruppen gefunden.")
         (progn
-          (princ "\n=== 重复组 ===")
+          (princ "\n=== Doppelte Gruppen ===")
           (setq i 0)
           (foreach g groups
             (setq i (1+ i))
             (princ (strcat "\n" (itoa i) ") "
                    (car g) " → " (_join (cdr g) ", "))))
           (setq sel (getint
-            (strcat "\n\n编号 [1-" (itoa i) ",0=退出]<0>: ")))
+            (strcat "\n\nNummer [1-" (itoa i) ",0=Abbruch]<0>: ")))
           (if (and sel (> sel 0) (<= sel i))
             (progn
               (setq g (nth (1- sel) groups))
-              (if (_confirm (strcat "清理 " (_join (cdr g) ", ")))
+              (setq delList (_dupList (car g) (cdr g)))
+              (if (_confirm (strcat "Bereinige " (_join delList ", ")))
                 (progn
-                  (foreach n (cdr g) (_zap n))
-                  (princ "\n✔ 已删除；请再手动 PURGE 空壳。"))
-                (princ "\n— 取消 —"))))))
+                  (foreach n delList (_zap n))
+                  (princ "\n✔ Entfernt; bitte anschließend PURGE manuell ausführen."))
+                (princ "\n— Abbruch —"))))))
     )
   )
   (princ)
 )
 
-(princ "\nPSDDEDUP v8 已加载 —— 输入 PSDDEDUP 运行。\n")
+(princ "\nPSDDEDUP v9 geladen – Befehl PSDDEDUP eingeben.\n")
 (princ)
