@@ -1,18 +1,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PSD_DEDUP_EN.lsp  --  Scan and remove duplicate Property Set Definitions
+;; PSD_DEDUP_v9.lsp  —  Remove duplicate Property-Set-Definitions
 (vl-load-com)
 
-;; -- Base name extraction -------------------------------------------------------
+;;— Extract base name —————————————————————————————————————————
 (defun _base (s / p)
   (if (setq p (vl-string-search " (" s))
     (vl-string-trim " " (substr s 1 p))
     s))
 
-;; -- String helpers ------------------------------------------------------------
+;;— String utilities: join & split ——————————————————————————
 (defun _join (lst sep / r)
   (setq r "")
-  (foreach i lst
-    (setq r (strcat r (if (= r "") "" sep) i)))
+  (foreach i lst (setq r (strcat r (if (= r "") "" sep) i)))
   r)
 
 (defun _split (str deli / p s res)
@@ -22,7 +21,7 @@
           s (+ p (strlen deli))))
   (reverse (cons (substr str s) res)))
 
-;; -- Access PSD dictionary and names ------------------------------------------
+;;— Get PSD dictionary & list ————————————————————————————
 (defun _dict ()
   (vl-catch-all-apply
     '(lambda ()
@@ -35,28 +34,29 @@
     (vlax-for x d (setq lst (cons (vla-get-name x) lst))))
   lst)
 
-;; -- Build duplicate groups keeping one base ----------------------------------
-(defun _dupList (lst / groups out b g names base dups)
+;;— Group and find duplicates ——————————————————————————
+(defun _dups (lst / g out)
   (foreach n lst
-    (setq b (_base n))
-    (if (setq g (assoc b groups))
-        (setq groups (subst (cons b (cons n (cdr g))) g groups))
-        (setq groups (cons (list b n) groups))))
-  (foreach g groups
-    (setq names (cdr g))
-    (setq base (vl-some '(lambda (x) (if (= (_base x) x) x)) names))
-    (if base
-        (setq dups (vl-remove base names))
-        (setq base (car names) dups (cdr names)))
-    (when dups
-      (setq out (cons (cons base dups) out))))
-  (reverse out))
+    (if (setq g (assoc (_base n) out))
+      (setq out (subst (append g (list n)) g out))
+      (setq out (cons (list (_base n) n) out))))
+  (vl-remove-if '(lambda (e) (< (length e) 3)) out))
 
 (defun _baseMatch (b f)
   (or (null f)
       (vl-some '(lambda (p) (wcmatch (strcase b) (strcase p))) f)))
 
-;; -- Simple Y/N confirmation ---------------------------------------------------
+;;— Build delete list from a group (keep one base name) ——————
+(defun _dupList (base lst / keep del)
+  (foreach n lst
+    (if (= n base)
+      (if keep
+        (setq del (cons n del))
+        (setq keep T))
+      (setq del (cons n del))))
+  (reverse del))
+
+;;— Simple Y/N confirmation ————————————————————————————
 (defun _confirm (msg / input)
   (princ (strcat "\n" msg " [Y/N] <N>: "))
   (setq input (getstring T))
@@ -65,44 +65,57 @@
     ((wcmatch (strcase input) "Y,*") T)
     (T nil)))
 
-;; -- Remove one PSD -----------------------------------------------------------
+;;— Delete one PSD ————————————————————————————————————————
 (defun _zap (nm / d o)
-  (vl-cmdf "_.PROPERTYSETCLEAN" nm "")
+  (vl-cmdf "_.PROPERTYSETCLEAN" nm "")   ; remove object data
   (if (setq d (_dict))
     (vl-catch-all-apply
-      '(lambda () (setq o (vla-item d nm)) (vla-delete o)))))
+      '(lambda ()
+         (setq o (vla-item d nm))
+         (vla-delete o)))))
 
-;; -- Main command -------------------------------------------------------------
-(defun c:PSDDEDUP_EN (/ all filtStr filters groups i sel g)
+;;— Main command ——————————————————————————————————————————
+(defun c:PSDDEDUP (/ all filtStr filters groups i sel g delList)
   (setq all (_names))
   (if (null all)
-    (princ "\n=> No Property Set Definitions found in this drawing.")
+    (princ "\n=> No property-set definitions in this drawing.")
     (progn
-      (setq filtStr (getstring T "\nEnter base-name filters (comma,* ?) <All>: "))
+      (setq filtStr
+            (getstring T
+              "\nEnter base-name filter (comma,* ?) <All>: "))
       (if (> (strlen filtStr) 0)
         (setq filters (_split filtStr ",")))
 
-      (setq groups (_dupList all)
-            groups (vl-remove-if '(lambda (x) (not (_baseMatch (car x) filters))) groups))
+      (setq groups (_dups all)
+            groups (vl-remove-if
+                     '(lambda (x) (not (_baseMatch (car x) filters)))
+                     groups))
 
       (if (null groups)
         (princ "\n=> No duplicate groups found.")
         (progn
-          (princ "\n=== Duplicate Groups ===")
+          (princ "\n=== Duplicate groups ===")
           (setq i 0)
           (foreach g groups
             (setq i (1+ i))
-            (princ (strcat "\n" (itoa i) ") " (car g) " -> " (_join (cdr g) ", "))))
-          (setq sel (getint (strcat "\n\nNumber [1-" (itoa i) ",0=Exit]<0>: ")))
+            (princ (strcat "\n" (itoa i) ") "
+                           (car g) " → " (_join (cdr g) ", "))))
+          (setq sel
+                (getint
+                  (strcat "\n\nNumber [1-" (itoa i) ",0=Cancel]<0>: ")))
           (if (and sel (> sel 0) (<= sel i))
             (progn
               (setq g (nth (1- sel) groups))
-              (if (_confirm (strcat "Delete " (_join (cdr g) ", ")))
+              (setq delList (_dupList (car g) (cdr g)))
+              (if (_confirm (strcat "Delete " (_join delList ", ")))
                 (progn
-                  (foreach n (cdr g) (_zap n))
-                  (princ "\n✔ Done. Run PURGE to remove empty shells."))
-                (princ "\n— Cancelled —"))))))))
-  (princ))
+                  (foreach n delList (_zap n))
+                  (princ "\n✔ Removed; please run PURGE manually afterwards."))
+                (princ "\n— Cancelled —")))))))
+    )
+  )
+  (princ)
+)
 
-(princ "\nPSDDEDUP_EN loaded - run PSDDEDUP_EN to start.\n")
+(princ "\nPSDDEDUP v9 loaded – type PSDDEDUP to run.\n")
 (princ)
