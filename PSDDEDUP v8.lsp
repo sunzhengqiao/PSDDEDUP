@@ -39,6 +39,15 @@
 (defun _baseMatch (b f) (or (null f)
   (vl-some '(lambda (p) (wcmatch (strcase b) (strcase p))) f)))
 
+;— Y/N 简易确认 ——————————————————————————
+(defun _confirm (msg / input)
+  (princ (strcat "\n" msg " [Y/N] <N>: "))
+  (setq input (getstring T))
+  (cond
+    ((or (null input) (= input "")) nil)
+    ((wcmatch (strcase input) "Y,*") T)
+    (T nil)))
+
 ;— 清理一个 PSD —————————————————————————
 (defun _zap (nm / d o)
   (vl-cmdf "_.PROPERTYSETCLEAN" nm "")     ;删对象数据
@@ -73,17 +82,17 @@
           (setq sel (getint
             (strcat "\n\n编号 [1-" (itoa i) ",0=退出]<0>: ")))
           (if (and sel (> sel 0) (<= sel i))
-            (setq g (nth (1- sel) groups)
-                  ok (getkword
-                       (strcat "\n清理 "
-                               (_join (cdr g) ", ")
-                               " ? [Yes/No] <No>: ")))
-          )
-          (if (= ok "Yes")
-            (progn (foreach n (cdr g) (_zap n))
-                   (princ "\n✔ 已删除；请再手动 PURGE 空壳。"))
-            (princ "\n— 取消 —"))))))
-  (princ))
+            (progn
+              (setq g (nth (1- sel) groups))
+              (if (_confirm (strcat "清理 " (_join (cdr g) ", ")))
+                (progn
+                  (foreach n (cdr g) (_zap n))
+                  (princ "\n✔ 已删除；请再手动 PURGE 空壳。"))
+                (princ "\n— 取消 —"))))))
+    )
+  )
+  (princ)
+)
 
 (princ "\nPSDDEDUP v8 已加载 —— 输入 PSDDEDUP 运行。\n")
 (princ)
