@@ -1,5 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PSD_DEDUP_v9.lsp  ——  清理重复 Property-Set-Definitions（德语界面）
+;; Script Name : PSD_DEDUP.lsp
+;; Version     : v1
+;; Author      : zhengqiao.sun@hsbcad.com
+;; Date        : 23.05.2025
+;; Description : Removes duplicate Property-Set-Definitions (PSD) in AutoCAD
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; PSD_DEDUP_v1.lsp  ——  清理重复 Property-Set-Definitions（德语界面）
 (vl-load-com)
 
 ;— 基名提取 ————————————————————————————————
@@ -105,5 +112,5 @@
   (princ)
 )
 
-(princ "\nPSDDEDUP v9 geladen – Befehl PSDDEDUP eingeben.\n")
+(princ "\nPSDDEDUP v1 geladen – Befehl PSDDEDUP eingeben.\n")
 (princ)
