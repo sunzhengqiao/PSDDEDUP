@@ -1,1 +1,11 @@
 # PSDDEDUP
+
+AutoLISP scripts to identify and remove duplicate Property Set Definitions (PSDs) in AutoCAD Architecture drawings.
+
+## Files
+
+- `PSDDEDUP v8.lsp` – Chinese user interface.
+- `PSDDEDUP_EN.lsp` – English user interface.
+- `需求文档.txt` – project requirements (Chinese).
+
+Load either script with `APPLOAD` then run `PSDDEDUP` or `PSDDEDUP_EN`.
