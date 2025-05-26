@@ -6,7 +6,7 @@ Dieses AutoLISP-Skript dient dazu, doppelte Property Set Definitions (PSD) in ei
 📦 **Skript laden**
 1. Starte AutoCAD Architecture.
 2. Tippe den Befehl `APPLOAD` in die Befehlszeile ein.
-3. Lade die Datei `PSDDEDUP v9.lsp`.
+3. Lade die Datei `PSDDEDUP lsp`.
 
 Nach dem Laden erscheint in der Befehlszeile:
 ```
