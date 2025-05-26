@@ -9,3 +9,9 @@ AutoLISP scripts to identify and remove duplicate Property Set Definitions (PSDs
 - `需求文档.txt` – project requirements (Chinese).
 
 Load either script with `APPLOAD` then run `PSDDEDUP` or `PSDDEDUP_EN`.
+
+## Usage
+Detailed instructions are available in:
+
+- [USAGE-DE.md](USAGE-DE.md) – German user guide.
+- [USAGE-EN.md](USAGE-EN.md) – English user guide.
