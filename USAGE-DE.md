@@ -10,7 +10,7 @@ Dieses AutoLISP-Skript dient dazu, doppelte Property Set Definitions (PSD) in ei
 
 Nach dem Laden erscheint in der Befehlszeile:
 ```
-PSDDEDUP v9 geladen – Befehl PSDDEDUP eingeben.
+PSDDEDUP geladen – Befehl PSDDEDUP eingeben.
 ```
 Das Skript ist jetzt einsatzbereit.
 
