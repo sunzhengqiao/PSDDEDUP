@@ -31,7 +31,7 @@
       '(lambda () (setq o (vla-item d nm)) (vla-delete o)))))
 
 ;— 主命令 ——————————————————————————————
-(defun c:PSDWHITELISTCLEAN (/ all keepList)
+(defun c:WLREIN (/ all keepList)
   (setq keepList
     '("2dBlock" "AecPolygonStil" "Dachelementstil" "Decke" "Deckenelemente"
       "Deckenstil" "Dichte" "Fassadenstil" "Fenster" "Fensterstil"
@@ -49,5 +49,5 @@
       (princ "\n✔ Bereinigung abgeschlossen.")))
   (princ))
 
-(princ "\nPSDWHITELISTCLEAN geladen – Befehl PSDWHITELISTCLEAN eingeben.\n")
+(princ "\nWLREIN geladen – Befehl WLREIN eingeben.\n")
 (princ)
