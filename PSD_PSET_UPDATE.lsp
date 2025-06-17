@@ -9,11 +9,16 @@
 (vl-load-com)
 
 ;;--- Utility: obtain the property set definition dictionary of a document -----
-(defun _psd-dict (doc / nod)
-  (vl-catch-all-apply
-    '(lambda ()
-       (setq nod (vla-get-NamedObjectsDictionary doc))
-       (vla-Item nod "AEC_PROPERTY_SET_DEFS")))
+(defun _psd-dict (doc / nod res)
+  ;; Return the property set definition dictionary of DOC
+  ;; or NIL if the dictionary doesn't exist
+  (setq res
+    (vl-catch-all-apply
+      '(lambda ()
+         (setq nod (vla-get-NamedObjectsDictionary doc))
+         (vla-Item nod "AEC_PROPERTY_SET_DEFS")))
+  )
+  (if (vl-catch-all-error-p res) nil res)
 )
 
 ;;--- Copy or replace a definition by name ------------------------------------
