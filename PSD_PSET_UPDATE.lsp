@@ -40,6 +40,10 @@
   (setq app  (vlax-get-Acad-object)
         docs (vla-get-Documents app)
         dstDoc (vla-get-ActiveDocument app))
+  ;; Ensure the drawing uses the Windows Latin-1 code page so that
+  ;; property set names containing characters such as öäüß are handled
+  ;; correctly when copied from the template
+  (setvar "DWGCODEPAGE" "ANSI_1252")
   (if (findfile srcPath)
     (progn
       (setq srcDoc (vla-Open docs srcPath))
