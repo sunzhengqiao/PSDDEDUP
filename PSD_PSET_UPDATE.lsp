@@ -42,8 +42,11 @@
         dstDoc (vla-get-ActiveDocument app))
   ;; Ensure the drawing uses the Windows Latin-1 code page so that
   ;; property set names containing characters such as öäüß are handled
-  ;; correctly when copied from the template
-  (setvar "DWGCODEPAGE" "ANSI_1252")
+  ;; correctly when copied from the template.  Some drawings don't
+  ;; allow this system variable to be changed, so ignore any failure.
+  (if (/= (strcase (getvar "DWGCODEPAGE")) "ANSI_1252")
+    (vl-catch-all-apply
+      'setvar (list "DWGCODEPAGE" "ANSI_1252")))
   (if (findfile srcPath)
     (progn
       (setq srcDoc (vla-Open docs srcPath))
