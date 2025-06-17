@@ -53,14 +53,14 @@
         (progn
           (vlax-for itm srcDict
             (_copy-psd srcDict dstDict (vla-get-Name itm)))
-          (princ "\n✔ Property sets updated.")
+          (princ "\n✔ Property-Sets aktualisiert. Überflüssige wurden überschrieben.")
         )
-        (princ "\n=> Property set dictionary not found."))
+        (princ "\n=> Property-Set-Definitionen können nicht geöffnet werden."))
       (vla-Close srcDoc)
     )
-    (princ "\n=> Template file not found."))
+    (princ "\n=> Vorlagendatei nicht gefunden. Bitte überprüfen Sie den Pfad."))
   (princ)
 )
 
-(princ "\nPSDUPDATE loaded – type PSDUPDATE to run.\n")
+(princ "\nPSDUPDATE geladen – Befehl PSDUPDATE eingeben.\n")
 (princ)
